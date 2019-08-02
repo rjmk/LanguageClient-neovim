@@ -133,6 +133,9 @@ impl<P: AsRef<Path> + std::fmt::Debug> ToUrl for P {
 pub fn apply_TextEdits(lines: &[String], edits: &[TextEdit]) -> Fallible<Vec<String>> {
     // Edits are ordered from bottom to top, from right to left.
     let mut edits_by_index = vec![];
+    let mut start_prev = None;
+    let mut end_prev = None;
+    let mut new_text = String::new();
     for edit in edits {
         let start_line = edit.range.start.line.to_usize()?;
         let start_character: usize = edit.range.start.character.to_usize()?;
@@ -149,14 +152,31 @@ pub fn apply_TextEdits(lines: &[String], edits: &[TextEdit]) -> Fallible<Vec<Str
             .map(String::len)
             .fold(0, |acc, l| acc + l + 1 /*line ending*/)
             + end_character;
-        edits_by_index.push((start, end, &edit.new_text));
+
+        if Some(start) == start_prev && Some(end) == end_prev {
+            new_text += &edit.new_text;
+        } else {
+            if let Some(start_prev) = start_prev {
+                if let Some(end_prev) = end_prev {
+                    edits_by_index.push((start_prev, end_prev, new_text));
+                }
+            }
+            start_prev = Some(start);
+            end_prev = Some(end);
+            new_text = String::new();
+        }
+    }
+    if let Some(start_prev) = start_prev {
+        if let Some(end_prev) = end_prev {
+            edits_by_index.push((start_prev, end_prev, new_text));
+        }
     }
 
     let mut text = lines.join("\n");
     for (start, end, new_text) in edits_by_index {
         let start = std::cmp::min(start, text.len());
         let end = std::cmp::min(end, text.len());
-        text = String::new() + &text[..start] + new_text + &text[end..];
+        text = String::new() + &text[..start] + &new_text + &text[end..];
     }
 
     Ok(text.lines().map(ToOwned::to_owned).collect())

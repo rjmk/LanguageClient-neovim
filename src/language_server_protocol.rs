@@ -418,8 +418,7 @@ impl LanguageClient {
         // same order the server sent it, and so that a delete/replace (according to the LSP spec,
         // there can only be one per start position and it must be after the inserts) will work on
         // the original document, not on the just-inserted text.
-        edits.sort_by_key(|edit| (edit.range.start.line, edit.range.start.character));
-        edits.reverse();
+        edits.sort_by_key(|edit| (-(edit.range.start.line as i128), -(edit.range.start.character as i128)));
 
         self.vim()?.edit(&None, path)?;
 
