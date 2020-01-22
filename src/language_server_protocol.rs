@@ -2654,7 +2654,7 @@ impl LanguageClient {
                     if viewport.overlaps(diag.range) {
                         virtual_texts.push(VirtualText {
                             line: diag.range.start.line,
-                            text: diag.message.replace("\n", "  ").clone(),
+                            text: diag.message.split("\n").clone(),
                             hl_group: diagnosticsDisplay
                                 .get(&(diag.severity.unwrap_or(DiagnosticSeverity::Hint) as u64))
                                 .ok_or_else(|| err_msg("Failed to get display"))?
