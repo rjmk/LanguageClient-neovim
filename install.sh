@@ -49,11 +49,4 @@ if [ -f "$bin" ]; then
 fi
 
 arch=$(uname -sm)
-case "${arch}" in
-    "Linux x86_64") download $name-$version-x86_64-unknown-linux-musl ;;
-    "Linux i686") download $name-$version-i686-unknown-linux-musl ;;
-    "Linux aarch64") download $name-$version-aarch64-unknown-linux-gnu ;;
-    "Darwin x86_64") download $name-$version-x86_64-apple-darwin ;;
-    "FreeBSD amd64") download $name-$version-x86_64-unknown-freebsd ;;
-    *) echo "No pre-built binary available for ${arch}."; try_build ;;
-esac
+try_build
