@@ -21,7 +21,7 @@ try_wget() {
 
 download() {
     echo "Downloading bin/${name} ${version}..."
-    url=https://github.com/autozimu/LanguageClient-neovim/releases/download/$version/${1}
+    url=https://github.com/rjmk/LanguageClient-neovim/releases/download/$version/${1}
     if (try_curl "$url" || try_wget "$url"); then
         chmod a+x bin/$name
         return
