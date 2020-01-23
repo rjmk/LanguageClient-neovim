@@ -2654,7 +2654,7 @@ impl LanguageClient {
                     if viewport.overlaps(diag.range) {
                         virtual_texts.push(VirtualText {
                             line: diag.range.start.line,
-                            text: diag.message.split("\n").clone(),
+                            text: diag.message.split("\n").map(String::from).collect(), // .collect(),
                             hl_group: diagnosticsDisplay
                                 .get(&(diag.severity.unwrap_or(DiagnosticSeverity::Hint) as u64))
                                 .ok_or_else(|| err_msg("Failed to get display"))?
@@ -2676,7 +2676,7 @@ impl LanguageClient {
                 if let Some(command) = cl.command {
                     virtual_texts.push(VirtualText {
                         line: cl.range.start.line,
-                        text: command.title,
+                        text: vec![command.title.to_string()],
                         hl_group: "Comment".into(),
                     })
                 }

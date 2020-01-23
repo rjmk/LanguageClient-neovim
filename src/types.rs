@@ -1102,7 +1102,7 @@ pub enum RawMessage {
 #[derive(Debug, Eq, PartialEq, Serialize)]
 pub struct VirtualText {
     pub line: u64,
-    pub text: String,
+    pub text: Vec<String>,
     pub hl_group: String,
 }
 
