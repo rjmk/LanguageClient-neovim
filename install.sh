@@ -6,7 +6,7 @@
 set -o nounset    # error when referencing undefined variable
 set -o errexit    # exit when command fails
 
-version=0.1.156
+version=0.1.157
 name=languageclient
 
 try_curl() {
@@ -21,7 +21,7 @@ try_wget() {
 
 download() {
     echo "Downloading bin/${name} ${version}..."
-    url=https://github.com/rjmk/LanguageClient-neovim/releases/download/$version/${1}
+    url=https://github.com/rjmk/LanguageClient-neovim/releases/download/$version/languageclient/
     if (try_curl "$url" || try_wget "$url"); then
         chmod a+x bin/$name
         return
@@ -49,4 +49,4 @@ if [ -f "$bin" ]; then
 fi
 
 arch=$(uname -sm)
-try_build
+download $version
